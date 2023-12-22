@@ -48,7 +48,7 @@ where
         Command::FunctionSelect(0x01).send(&mut self.iface)?;
         Command::SetVsl.send(&mut self.iface)?;
         Command::Contrast(0x8F).send(&mut self.iface)?;
-        Command::ContrastCurrent(0x0F).send(&mut self.iface)?;
+        Command::ContrastCurrent(0x09).send(&mut self.iface)?;
         // Command::PhaseLength(0x32).send(&mut self.iface)?;
         // Command::PreCharge(0x17).send(&mut self.iface)?;
         Command::PreCharge(0x32).send(&mut self.iface)?;
