@@ -56,7 +56,7 @@ impl Builder {
         buffer: &'static mut [u8],
     ) -> DisplayMode<RawMode<SpiInterface<SPI, DC>>>
     where
-        SPI: hal::blocking::spi::Transfer<u8> + hal::blocking::spi::Write<u8>,
+        SPI: hal::blocking::spi::Write<u8> + embedded_hal_async::spi::SpiBus<u8>,
         DC: OutputPin,
     {
         assert_eq!(buffer.len(), 128 * 128 * 2);
@@ -72,7 +72,7 @@ impl Builder {
         dc: DC,
     ) -> DisplayMode<RawMode<SpiInterface<SPI, DC>>>
     where
-        SPI: hal::blocking::spi::Transfer<u8> + hal::blocking::spi::Write<u8>,
+        SPI: hal::blocking::spi::Write<u8> + embedded_hal_async::spi::SpiBus<u8>,
         DC: OutputPin,
     {
         let properties = Display::new(SpiInterface::new(spi, dc), self.display_size, self.rotation);

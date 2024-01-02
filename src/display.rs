@@ -93,6 +93,14 @@ where
         Ok(())
     }
 
+    /// Send the data to the display asynchronously for drawing at the current position in the framebuffer
+    /// and advance the position accordingly. Cf. `set_draw_area` to modify the affected area by
+    /// this method.
+    pub async fn draw_async(&mut self, buffer: &[u8]) -> Result<(), ()> {
+        self.iface.send_data_async(buffer).await?;
+        Ok(())
+    }
+
     /// Get the configured display size
     pub fn get_size(&self) -> DisplaySize {
         self.display_size

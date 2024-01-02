@@ -27,13 +27,13 @@ where
 
 impl<SPI, DC> DisplayInterface for SpiInterface<SPI, DC>
 where
-    SPI: hal::blocking::spi::Write<u8>,
+    SPI: hal::blocking::spi::Write<u8> + embedded_hal_async::spi::SpiBus<u8>,
     DC: OutputPin,
 {
     fn send_command(&mut self, cmd: u8) -> Result<(), ()> {
         self.dc.set_low().map_err(|_| ())?;
 
-        self.spi.write(&[cmd]).map_err(|_| ())?;
+        hal::blocking::spi::Write::write(&mut self.spi, &[cmd]).map_err(|_| ())?;
 
         self.dc.set_high().map_err(|_| ())?;
         Ok(())
@@ -43,7 +43,17 @@ where
         // 1 = data, 0 = command
         self.dc.set_high().map_err(|_| ())?;
 
-        self.spi.write(buf).map_err(|_| ())?;
+        hal::blocking::spi::Write::write(&mut self.spi, buf).map_err(|_| ())?;
+        Ok(())
+    }
+
+    async fn send_data_async(&mut self, buf: &[u8]) -> Result<(), ()> {
+        // 1 = data, 0 = command
+        self.dc.set_high().map_err(|_| ())?;
+
+        embedded_hal_async::spi::SpiBus::write(&mut self.spi, buf)
+            .await
+            .map_err(|_| ())?;
 
         Ok(())
     }

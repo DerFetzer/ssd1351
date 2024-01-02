@@ -139,6 +139,15 @@ where
         self.display.draw(self.buffer).unwrap();
     }
 
+    #[cfg(feature = "buffered")]
+    pub async fn flush_async(&mut self) {
+        let (display_width, display_height) = self.display.get_size().dimensions();
+        self.display
+            .set_draw_area((0, 0), (display_width, display_height))
+            .unwrap();
+        self.display.draw_async(self.buffer).await.unwrap();
+    }
+
     /// Display is set up in column mode, i.e. a byte walks down a column of 8 pixels from
     /// column 0 on the left, to column _n_ on the right
     pub fn init(&mut self) -> Result<(), ()> {
